@@ -1,0 +1,11 @@
+<robot name="Car" xmlns:xacro="http://wiki.ros.org/xacro">
+    <!-- include 'base' 'laser' 'camera' .xacro file -->
+    <xacro:include filename="intertia_matrix.xacro"/>
+    <xacro:include filename="robot_model_base.urdf.xacro"/>
+    <xacro:include filename="robot_model_camera.urdf.xacro"/>
+    <xacro:include filename="robot_model_laser.urdf.xacro"/>
+    <xacro:include filename="$(find robot_model)/urdf/gazebo/move.xacro"/>
+    <xacro:include filename="$(find robot_model)/urdf/gazebo/laser.xacro"/>
+    <xacro:include filename="$(find robot_model)/urdf/gazebo/camera.xacro"/>
+    <xacro:include filename="$(find robot_model)/urdf/gazebo/kinect.xacro"/>
+</robot>

@@ -1,0 +1,11 @@
+local_costmap:
+  global_frame: odom #Odometer Coordinate System
+  robot_base_frame: base_footprint #Robot Coordinate System
+  update_frequency: 10.0 #how often the cost map is updated
+  publish_frequency: 10.0 #how often the cost map is published
+  transform_tolerance: 0.5 #the timeout period for the coordinate transformation to publish information
+  static_map: false  #there is no need for a static map, which can improve the navigation effect
+  rolling_window: true #whether to use a dynamic window, the default is false, and the map will not change in a static global map
+  width: 3 # the local map width is in m
+  height: 3 # the local map height is in m
+  resolution: 0.05 # local map resolution is measured in m, which is generally consistent with static map resolution

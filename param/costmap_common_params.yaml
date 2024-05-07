@@ -1,0 +1,15 @@
+#robot geometry parameters, set robot_radius if the robot is round, and footprint if it is another shape
+robot_radius: 0.12 #rotundity
+# footprint: [[-0.12, -0.12], [-0.12, 0.12], [0.12, 0.12], [0.12, -0.12]] #其他形状
+obstacle_range: 3.0 # for obstacle detection, e.g. a value of 3.0 means that when an obstacle is detected at a distance of less than 3 meters, a cost map is introduced
+raytrace_range: 3.5 # used to clear obstacles, e.g. a value of 3.5 means that obstacles are removed 3.5 meters away from the cost map
+#the expansion radius, which extends beyond the collision area, allows the robot to plan a path to avoid obstacles
+inflation_radius: 0.2
+#the greater the cost proportional coefficient, the smaller the generation value
+cost_scaling_factor: 3.0
+#map type
+map_type: costmap
+#sensors required for the navigation package
+observation_sources: scan
+#configure the sensor's coordinate system and data. this will also be used to add and remove obstacles to the cost map. for example, you can use the lidar sensor to add obstacles to the cost map, and the kinect to navigate and clear obstacles.
+scan: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}

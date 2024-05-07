@@ -1,0 +1,127 @@
+<robot name="Car" xmlns:xacro="http://wiki.ros.org/xacro">
+    <!-- base part -->
+    <xacro:property name="footprint_radius" value="0.001"/>
+    <xacro:property name="base_link_radius" value="0.1"/>
+    <xacro:property name="base_link_length" value="0.08"/>
+    <xacro:property name="base_link_mass" value="2"/>
+    <xacro:property name="distance2ground" value="0.015"/>
+    <xacro:property name="base_joint_z" value="${base_link_length / 2 +distance2ground}"/>
+    <xacro:property name="wheel_radius" value="0.0325"/>
+    <xacro:property name="wheel_length" value="0.015"/>
+    <xacro:property name="wheel_mass" value="0.05"/>
+    <xacro:property name="PI" value="3.1415927"/>
+    <xacro:property name="wheel_joint_z" value="${-1 * (base_link_length / 2 + distance2ground - wheel_radius)}"/>
+    <xacro:include filename="intertia_matrix.xacro"/>
+    <link name="base_footprint">
+        <visual>
+            <geometry>
+                <sphere radius="${footprint_radius}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <cylinder radius="${base_link_radius}" length="${base_link_length}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>  
+            <material name="bask_link_color">
+                <color rgba="0 0 1 0.95"/>
+            </material> 
+        </visual>
+        <!-- physical property -->
+        <collision>
+            <geometry>
+                <cylinder radius="${base_link_radius}" length="${base_link_length}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>  
+        </collision>
+        <xacro:cylinder_inertial_matrix m="${base_link_mass}" r="${base_link_radius}" h="${base_link_length}"/>
+        <!-- physical property -->
+    </link>
+    <!-- gazebo color set -->
+    <gazebo reference="base_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <joint name="base_link2base_footprint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.055" rpy="0 0 0"/>
+    </joint>
+    <!-- define the wheel "flag = 1 is left, flag = -1 is right" -->
+    <!-- driving wheel -->
+    <xacro:macro name="wheel_func" params="wheel_name flag">
+        <link name="${wheel_name}_wheel">
+            <visual>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="${PI/2} 0 0 "/>
+                <material name="${wheel_name}_wheel_color">
+                    <color rgba="0 0 0 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="${PI/2} 0 0 "/>
+            </collision>
+            <xacro:cylinder_inertial_matrix m="${wheel_mass}" r="${wheel_radius}" h="${wheel_length}"/>
+        </link>
+        <gazebo reference="${wheel_name}_wheel">
+            <material>Gazebo/Black</material>
+        </gazebo>
+        <joint name="${wheel_name}2base_link" type="continuous">
+            <parent link="base_link"/>
+            <child link="${wheel_name}_wheel"/>
+            <!-- <origin xyz="0 ${0.1 * flag} ${wheel_joint_z}" rpy="0 0 0"/> -->
+            <origin xyz="0 ${0.1 * flag} ${wheel_joint_z}" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+        </joint>
+    </xacro:macro>
+    <!-- callback define -->
+    <xacro:wheel_func wheel_name="left" flag="1"/>
+    <xacro:wheel_func wheel_name="right" flag="-1"/>
+    <!-- define all vector wheel parameters-->
+    <xacro:property name="all_vector_wheel_radius" value="0.0075"/>
+    <xacro:property name="all_vector_wheel_mass" value="0.01"/>
+    <xacro:property name="all_vector_wheel_joint_z" value="${-1 * (base_link_length /2 + distance2ground - all_vector_wheel_radius)}"/>
+    <!-- define all vector wheel body -->
+    <xacro:macro name="all_vector_wheel_func" params="name flag">
+        <link name="${name}_wheel">
+            <visual>
+                <geometry>
+                    <sphere radius="${all_vector_wheel_radius}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/>  
+                <material name="${name}_wheel_color">
+                    <color rgba="0 0 0 1"/>
+                </material> 
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${all_vector_wheel_radius}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/> 
+            </collision>
+            <xacro:sphere_inertial_matrix m="${all_vector_wheel_mass}" r="${all_vector_wheel_radius}"/>
+        </link>
+        <joint name="${name}_wheel2base_link" type="continuous">
+            <parent link="base_link"/>
+            <child link="${name}_wheel"/>
+            <origin xyz="${0.08 * flag} 0 ${all_vector_wheel_joint_z}" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+        </joint>
+        <gazebo reference="${name}_wheel">
+            <material>Gazebo/Black</material>
+        </gazebo>
+    </xacro:macro>
+    <!-- callback define -->
+    <xacro:all_vector_wheel_func name="front" flag="1"/>
+    <xacro:all_vector_wheel_func name="back" flag="-1"/>
+
+
+</robot>
